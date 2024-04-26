@@ -50,13 +50,13 @@ namespace TextDeongeon
             calDefense();
         }
 
-        public void TakOffWeapon(ref Item equipWeapon)
+        public void TakOffWeapon()
         {
             this.weapon = null;
             calAttackDamage();
         }
 
-        public void TakOffArmor(ref Item equipArmor)
+        public void TakOffArmor()
         {
             this.armor = null;
             calDefense();

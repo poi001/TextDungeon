@@ -9,8 +9,6 @@ namespace TextDeongeon
 {
     internal class Program
     {
-        //게임 씬
-        //static Scene scene;
         static Character character = new Character();
         static List<Item> storeItem = new List<Item>();
 
@@ -44,12 +42,15 @@ HomeSceneStart:
             Console.WriteLine("3. 상점");
             Console.WriteLine("4. 던전 들어가기");
             Console.WriteLine("5. 휴식하기");
+            Console.WriteLine("6. 저장하기");
+            Console.WriteLine("7. 저장파일 삭제");
             Console.WriteLine();
             Console.WriteLine("0. 게임 종료");
             Console.WriteLine();
+SavePoint:
             Console.WriteLine("가고 싶은 장소를 입력하십시오,");
 
-            switch (SelectScene(5))
+            switch (SelectScene(7))
             {
                 case 1:
                     {
@@ -76,6 +77,20 @@ HomeSceneStart:
                         ChanageScene(Scene.Heal);
                         break;
                     }
+                case 6:
+                    {
+                        SaveGame();
+                        Console.WriteLine("저장완료");
+                        goto SavePoint;
+                    }
+                case 7:
+                    {
+                        DeleteSaveFile();
+                        Console.WriteLine("저장파일 삭제완료");
+                        goto SavePoint;
+                    }
+
+
                 case 0:
                     {
                         Console.WriteLine("게임이 종료되었습니다.");
@@ -106,6 +121,8 @@ HomeSceneStart:
             Console.WriteLine("골드   : {0}G", character.gold);
             Console.WriteLine();
             Console.WriteLine("0. 나가기");
+            Console.WriteLine();
+            Console.WriteLine("가고 싶은 장소를 입력하십시오,");
 
             SelectScene(0);
         }
@@ -179,18 +196,48 @@ EquipmentSceneStart:
 
             if ( inputNum != 0 )
             {
+
                 var it = item[inputNum - 1];
 
-                if (item[inputNum - 1].IsWeapon)
+                if(it.IsWeapon)
                 {
-                    character.EquipWeapon(ref it);
-                    goto EquipmentSceneStart;
+
+                    if (character.weapon != it)
+                    {
+
+                        character.EquipWeapon(ref it);
+                        goto EquipmentSceneStart;
+
+                    }
+                    else
+                    {
+
+                        character.TakOffWeapon();
+                        goto EquipmentSceneStart;
+
+                    }
+
                 }
                 else
                 {
-                    character.EquipArmor(ref it);
-                    goto EquipmentSceneStart;
+
+                    if (character.armor != it)
+                    {
+
+                        character.EquipArmor(ref it);
+                        goto EquipmentSceneStart;
+
+                    }
+                    else
+                    {
+
+                        character.TakOffArmor();
+                        goto EquipmentSceneStart;
+
+                    }
+
                 }
+
             }
 
         }
@@ -704,11 +751,95 @@ NotEnoughGold:
             return true;
         }
 
+        static void SaveGame()
+        {
+            string textFile = @"C:\Users\Me\source\Git\TextDungeon\save\SaveText";
+
+            if (File.Exists(textFile))
+            {
+                File.Delete(textFile);
+            }
+
+            using (StreamWriter sw = File.CreateText(textFile))
+            {
+                sw.WriteLine(character.level);
+                sw.WriteLine(character.currentEXP);
+                sw.WriteLine(character.maxEXP);
+                sw.WriteLine(character.name);
+                sw.WriteLine(character.characterClass);
+                sw.WriteLine(character.attackDamage);
+                sw.WriteLine(character.extraAttackDamage);
+                sw.WriteLine(character.defense);
+                sw.WriteLine(character.extraDefense);
+                sw.WriteLine(character.health);
+                sw.WriteLine(character.gold);
+
+                foreach (var item in character.list)
+                {
+                    sw.WriteLine(item.name);
+                }
+            }
+        }
+
+        static void LoadGame()
+        {
+            string path = @"C:\Users\Me\source\Git\TextDungeon\save\SaveText";
+            string line;
+
+            if (File.Exists(path))
+            {
+
+                using (StreamReader sr = new StreamReader(path))
+                {
+                    character.level = int.Parse(sr.ReadLine());
+                    character.currentEXP = int.Parse(sr.ReadLine());
+                    character.maxEXP = int.Parse(sr.ReadLine());
+                    character.name = sr.ReadLine();
+                    character.characterClass = sr.ReadLine();
+                    character.attackDamage = int.Parse(sr.ReadLine());
+                    character.extraAttackDamage = int.Parse(sr.ReadLine());
+                    character.defense = int.Parse(sr.ReadLine());
+                    character.extraDefense = int.Parse(sr.ReadLine());
+                    character.health = int.Parse(sr.ReadLine());
+                    character.gold = int.Parse(sr.ReadLine());
+
+                    List<string> invenList = new List<string>();
+                    List<Item> itemList = new List<Item>();
+
+                    while ((line = sr.ReadLine()) != null)
+                    {
+                        invenList.Add(line);
+                    }
+
+                    for (int i = 0; i < storeItem.Count; i++)
+                    {
+                        if (invenList.Contains(storeItem[i].name))
+                        {
+                            itemList.Add(storeItem[i]);
+                        }
+                    }
+
+                    character.list = itemList;
+                }
+
+            }
+
+        }
+
+        static void DeleteSaveFile()
+        {
+            string textFile = @"C:\Users\Me\source\Git\TextDungeon\save\SaveText";
+
+            if (File.Exists(textFile))
+            {
+                File.Delete(textFile);
+            }
+        }
+
         public static void Main()
         {
             ItemSetting();
-            //scene = Scene.Home;
-
+            LoadGame();
             HomeScene();
         }
     }
