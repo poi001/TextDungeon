@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Windows.Markup;
@@ -753,7 +754,9 @@ NotEnoughGold:
 
         static void SaveGame()
         {
-            string textFile = @"C:\Users\Me\source\Git\TextDungeon\save\SaveText";
+            string currentDirectory = Directory.GetCurrentDirectory();
+            string relativePath = @"..\..\..\..\save\SaveText";
+            string textFile = Path.GetFullPath(Path.Combine(currentDirectory, relativePath));
 
             if (File.Exists(textFile))
             {
@@ -783,7 +786,10 @@ NotEnoughGold:
 
         static void LoadGame()
         {
-            string path = @"C:\Users\Me\source\Git\TextDungeon\save\SaveText";
+            string currentDirectory = Directory.GetCurrentDirectory();
+            string relativePath = @"..\..\..\..\save\SaveText";
+            string path = Path.GetFullPath(Path.Combine(currentDirectory, relativePath));
+
             string line;
 
             if (File.Exists(path))
@@ -828,7 +834,9 @@ NotEnoughGold:
 
         static void DeleteSaveFile()
         {
-            string textFile = @"C:\Users\Me\source\Git\TextDungeon\save\SaveText";
+            string currentDirectory = Directory.GetCurrentDirectory();
+            string relativePath = @"..\..\..\..\save\SaveText";
+            string textFile = Path.GetFullPath(Path.Combine(currentDirectory, relativePath));
 
             if (File.Exists(textFile))
             {
