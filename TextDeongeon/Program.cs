@@ -755,7 +755,7 @@ NotEnoughGold:
         static void SaveGame()
         {
             string currentDirectory = Directory.GetCurrentDirectory();
-            string relativePath = @"..\..\..\..\save\SaveText";
+            string relativePath = @"..\..\..\..\TextDungeon";
             string textFile = Path.GetFullPath(Path.Combine(currentDirectory, relativePath));
 
             if (File.Exists(textFile))
@@ -787,7 +787,7 @@ NotEnoughGold:
         static void LoadGame()
         {
             string currentDirectory = Directory.GetCurrentDirectory();
-            string relativePath = @"..\..\..\..\save\SaveText";
+            string relativePath = @"..\..\..\..\TextDungeon";
             string path = Path.GetFullPath(Path.Combine(currentDirectory, relativePath));
 
             string line;
@@ -835,7 +835,7 @@ NotEnoughGold:
         static void DeleteSaveFile()
         {
             string currentDirectory = Directory.GetCurrentDirectory();
-            string relativePath = @"..\..\..\..\save\SaveText";
+            string relativePath = @"..\..\..\..\TextDungeon";
             string textFile = Path.GetFullPath(Path.Combine(currentDirectory, relativePath));
 
             if (File.Exists(textFile))
